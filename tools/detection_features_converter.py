@@ -25,13 +25,20 @@ import utils
 csv.field_size_limit(sys.maxsize)
 
 FIELDNAMES = ['image_id', 'image_w', 'image_h', 'num_boxes', 'boxes', 'features']
-infile = 'data/trainval_36/trainval_resnet101_faster_rcnn_genome_36.tsv'
+#infile = 'data/trainval_36/trainval_resnet101_faster_rcnn_genome_36.tsv'
+
+infile = '../vqa-belen/outputs/initial-features.tsv'
+
 train_data_file = 'data/train36.hdf5'
 val_data_file = 'data/val36.hdf5'
+
 train_indices_file = 'data/train36_imgid2idx.pkl'
 val_indices_file = 'data/val36_imgid2idx.pkl'
+
 train_ids_file = 'data/train_ids.pkl'
 val_ids_file = 'data/val_ids.pkl'
+
+
 
 feature_length = 2048
 num_fixed_boxes = 36
@@ -45,8 +52,14 @@ if __name__ == '__main__':
         train_imgids = cPickle.load(open(train_ids_file))
         val_imgids = cPickle.load(open(val_ids_file))
     else:
-        train_imgids = utils.load_imageid('data/train2014')
-        val_imgids = utils.load_imageid('data/val2014')
+        
+        base_imgs = '../DATA_imgs/'
+        folders = ['scene_img_abstract_v002_train2015/',
+                   'scene_img_abstract_v002_val2015/']
+        
+        train_imgids = utils.load_imageid(base_imgs+folders[0]) #set of ids
+        val_imgids = utils.load_imageid(base_imgs+folders[1]) #set of ids
+        
         cPickle.dump(train_imgids, open(train_ids_file, 'wb'))
         cPickle.dump(val_imgids, open(val_ids_file, 'wb'))
 
