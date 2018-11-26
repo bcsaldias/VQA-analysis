@@ -111,13 +111,16 @@ class VQAFeatureDataset(Dataset):
 
         self.dictionary = dictionary
 
+        ########################
+        ### LOADING FEATURES ###
+        ########################
         self.img_id2idx = cPickle.load(
             open(os.path.join(dataroot, '%s36_imgid2idx.pkl' % name)))
         print('loading features from h5 file')
         h5_path = os.path.join(dataroot, '%s36.hdf5' % name)
         with h5py.File(h5_path, 'r') as hf:
-            self.features = np.array(hf.get('image_features'))
-            self.spatials = np.array(hf.get('spatial_features'))
+            self.features = np.array(hf.get('image_features'))    ## boxes features (m, n_boxes, n_features)
+            self.spatials = np.array(hf.get('spatial_features'))  ## boxes location (m, n_boxes, 6)
 
         self.entries = _load_dataset(dataroot, name, self.img_id2idx)
 
@@ -162,6 +165,10 @@ class VQAFeatureDataset(Dataset):
                 entry['answer']['labels'] = None
                 entry['answer']['scores'] = None
 
+                
+    ########################
+    ### Edit to also return new features!!
+    ########################
     def __getitem__(self, index):
         entry = self.entries[index]
         features = self.features[entry['image']]

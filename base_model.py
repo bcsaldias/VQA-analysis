@@ -16,6 +16,10 @@ class BaseModel(nn.Module):
         self.v_net = v_net
         self.classifier = classifier
 
+        
+    ########################
+    # features, spatials, question, target !!! should receive new features!!
+    ########################
     def forward(self, v, b, q, labels):
         """Forward
 
@@ -49,12 +53,15 @@ def build_baseline0(dataset, num_hid):
     return BaseModel(w_emb, q_emb, v_att, q_net, v_net, classifier)
 
 
+######################## 
+# modify to add new features
+######################## 
 def build_baseline0_newatt(dataset, num_hid):
     w_emb = WordEmbedding(dataset.dictionary.ntoken, 300, 0.0)
     q_emb = QuestionEmbedding(300, num_hid, 1, False, 0.0)
     v_att = NewAttention(dataset.v_dim, q_emb.num_hid, num_hid)
-    q_net = FCNet([q_emb.num_hid, num_hid])
-    v_net = FCNet([dataset.v_dim, num_hid])
+    q_net = FCNet([q_emb.num_hid, num_hid]) # match dimensions
+    v_net = FCNet([dataset.v_dim, num_hid]) # match dimensions
     classifier = SimpleClassifier(
         num_hid, num_hid * 2, dataset.num_ans_candidates, 0.5)
     return BaseModel(w_emb, q_emb, v_att, q_net, v_net, classifier)

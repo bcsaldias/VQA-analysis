@@ -33,12 +33,18 @@ def train(model, train_loader, eval_loader, num_epochs, output):
         train_score = 0
         t = time.time()
 
+        ########################
+        # (features, spatials, question, target)
+        ########################
         for i, (v, b, q, a) in enumerate(train_loader):
             v = Variable(v).cuda()
             b = Variable(b).cuda()
             q = Variable(q).cuda()
             a = Variable(a).cuda()
 
+            ######################## 
+            # forwrard model
+            ######################## 
             pred = model(v, b, q, a)
             loss = instance_bce_with_logits(pred, a)
             loss.backward()
@@ -70,6 +76,9 @@ def evaluate(model, dataloader):
     score = 0
     upper_bound = 0
     num_data = 0
+    ######################## 
+    # modify for eval too
+    ######################## 
     for v, b, q, a in iter(dataloader):
         v = Variable(v, volatile=True).cuda()
         b = Variable(b, volatile=True).cuda()
