@@ -11,10 +11,12 @@ def create_dictionary(dataroot):
     dictionary = Dictionary()
     questions = []
     files = [
-        'v2_OpenEnded_mscoco_train2014_questions.json',
-        'v2_OpenEnded_mscoco_val2014_questions.json',
-        'v2_OpenEnded_mscoco_test2015_questions.json',
-        'v2_OpenEnded_mscoco_test-dev2015_questions.json'
+        'OpenEnded_abstract_v002_test2015_questions.json',
+        'OpenEnded_abstract_v002_train2015_questions.json',
+        'OpenEnded_abstract_v002_val2015_questions.json',
+        'MultipleChoice_abstract_v002_test2015_questions.json',
+        'MultipleChoice_abstract_v002_train2015_questions.json',
+        'MultipleChoice_abstract_v002_val2015_questions.json'
     ]
     for path in files:
         question_path = os.path.join(dataroot, path)
