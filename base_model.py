@@ -29,8 +29,8 @@ class BaseModel(nn.Module):
 
         return: logits, not probs
         """
-        w_emb = self.w_emb(q) # words2vec
-        q_emb = self.q_emb(w_emb) # [batch, q_dim] questions2vec
+        w_emb = self.w_emb(q) # (A) words2vec
+        q_emb = self.q_emb(w_emb) # (B) [batch, q_dim] questions2vec 
 
         ###
         ## Resize img using attention (m, n_boxes, n_features)
@@ -40,15 +40,15 @@ class BaseModel(nn.Module):
         (see Fig. 1.1). They are both passed through a non-linear layer fa (see Section 3.7) and a linear layer to obtain 
         a scalar attention weight αi,t associated with that location.
         """
-        att = self.v_att(v, q_emb) # returns weights for each location
-        v_emb = (att * v).sum(1) # [batch, v_dim]
+        att = self.v_att(v, q_emb) # (C) returns weights for each location - improved attention
+        v_emb = (att * v).sum(1) # (D) [batch, v_dim]
 
         
-        q_repr = self.q_net(q_emb) # match size
-        v_repr = self.v_net(v_emb) # match size
-        joint_repr = q_repr * v_repr
+        q_repr = self.q_net(q_emb) # (E) match size
+        v_repr = self.v_net(v_emb) # (F) match size
+        joint_repr = q_repr * v_repr # (G)
         
-        logits = self.classifier(joint_repr)
+        logits = self.classifier(joint_repr) # (H)
         return logits
 
 
