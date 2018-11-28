@@ -74,7 +74,9 @@ def build_baseline0_newatt(dataset, num_hid):
     
     q_net = FCNet([q_emb.num_hid, num_hid]) # match dimensions
     v_net = FCNet([dataset.v_dim, num_hid]) # match dimensions
-    
+    u_net = FCNet([dataset.v_dim, num_hid]) # match dimensions
+
+
     classifier = SimpleClassifier(
         num_hid *2 , num_hid * 2, dataset.num_ans_candidates, 0.5)
-    return BaseModel(w_emb, q_emb, v_att, q_net, v_net, classifier)
+    return BaseModel(w_emb, q_emb, v_att, q_net, v_net, u_net, classifier)

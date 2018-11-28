@@ -27,7 +27,14 @@ csv.field_size_limit(sys.maxsize)
 FIELDNAMES = ['image_id', 'image_w', 'image_h', 'num_boxes', 'boxes', 'features']
 #infile = 'data/trainval_36/trainval_resnet101_faster_rcnn_genome_36.tsv'
 
-infile = '../vqa-belen/outputs/initial-features.tsv'
+#infile = '../vqa-belen/outputs/initial-features.tsv'
+
+#infile = '../vqa-belen/outputs/scene_img_abstract_v002_train2015-features.tsv.0'
+#infile = '../vqa-belen/outputs/scene_img_abstract_v002_val2015-features.tsv.0'
+
+infile = '../vqa-belen/outputs/abstract_features_train_val.tsv'
+
+
 
 train_data_file = 'data/train36.hdf5'
 val_data_file = 'data/val36.hdf5'
@@ -127,6 +134,7 @@ if __name__ == '__main__':
                     dtype=np.float32).reshape((item['num_boxes'], -1))
                 train_spatial_img_features[train_counter, :, :] = spatial_features
                 train_counter += 1
+                
             elif image_id in val_imgids:
                 val_imgids.remove(image_id)
                 val_indices[image_id] = val_counter
@@ -136,6 +144,7 @@ if __name__ == '__main__':
                     dtype=np.float32).reshape((item['num_boxes'], -1))
                 val_spatial_img_features[val_counter, :, :] = spatial_features
                 val_counter += 1
+                
             else:
                 assert False, 'Unknown image id: %d' % image_id
 

@@ -5,7 +5,12 @@ from torch.utils.data import DataLoader
 import numpy as np
 
 from dataset import Dictionary, VQAFeatureDataset
-import base_model
+
+"""
+CHANGE MODEL HERE
+"""
+import my_model_1 as base_model
+
 from train import train
 import utils
 

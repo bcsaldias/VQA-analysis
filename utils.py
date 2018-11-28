@@ -28,12 +28,20 @@ def load_folder(folder, suffix):
     return imgs
 
 
-def load_imageid(folder):
+def dep_load_imageid(folder):
     images = load_folder(folder, 'jpg')
     img_ids = set()
     for img in images:
         img_id = int(img.split('/')[-1].split('.')[0].split('_')[-1])
         img_ids.add(img_id)
+    return img_ids
+
+def load_imageid(folder):
+    img_ids = set()
+    for file in os.listdir(folder):
+        if file.endswith('.png'):
+            _id = int(file.split('/')[-1].split('.')[0].split('_')[-1])
+            img_ids.add(_id)      
     return img_ids
 
 
