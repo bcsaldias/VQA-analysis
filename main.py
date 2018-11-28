@@ -52,17 +52,18 @@ if __name__ == '__main__':
     """
     load pretrained model
     """
-    
+    model = nn.DataParallel(model).cuda()
+
+
     model_path = 'saved_models/my_5_abstract/model.pth'
     model_params = torch.load(model_path)
-    model.load_state_dict(model_params, strict=False)
+    print("# params", len(model_params.keys()))
+    model.load_state_dict(model_params)
+    
     print("Loading params")
     model.eval() 
     model.train()
-    #model.train()
-
-
     print("PASE")
     
-    model = nn.DataParallel(model).cuda()
     train(model, train_loader, eval_loader, args.epochs, args.output)
+

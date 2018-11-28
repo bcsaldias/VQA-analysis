@@ -69,11 +69,8 @@ def train(model, train_loader, eval_loader, num_epochs, output):
         logger.write('\teval score: %.2f (%.2f)' % (100 * eval_score, 100 * bound))
 
         if eval_score > best_eval_score:
-            state = {'epoch': epoch + 1, 'state_dict': model.state_dict(),
-             'optimizer': optim.state_dict(), 'losslogger': logger}
-            
             model_path = os.path.join(output, 'model.pth')
-            torch.save(state, model_path)
+            torch.save(model.state_dict(), model_path)
             best_eval_score = eval_score
 
 
@@ -85,15 +82,17 @@ def evaluate(model, dataloader):
     # modify for eval too
     ######################## 
     for v, b, q, a in iter(dataloader):
-        v = Variable(v, volatile=True).cuda()
-        b = Variable(b, volatile=True).cuda()
-        q = Variable(q, volatile=True).cuda()
-        pred = model(v, b, q, None)
-        batch_score = compute_score_with_logits(pred, a.cuda()).sum()
-        score += batch_score
-        upper_bound += (a.max(1)[0]).sum()
-        num_data += pred.size(0)
+        with torch.no_grad():
+            v = Variable(v).cuda()
+            b = Variable(b).cuda()
+            q = Variable(q).cuda()
+            pred = model(v, b, q, None)
+            batch_score = compute_score_with_logits(pred, a.cuda()).sum()
+            score += batch_score
+            upper_bound += (a.max(1)[0]).sum()
+            num_data += pred.size(0)
 
     score = score / len(dataloader.dataset)
     upper_bound = upper_bound / len(dataloader.dataset)
     return score, upper_bound
+
