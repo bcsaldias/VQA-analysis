@@ -9,7 +9,7 @@ from dataset import Dictionary, VQAFeatureDataset
 """
 CHANGE MODEL HERE
 """
-import my_model_1 as base_model
+from models import my_model_2 as base_model
 
 from train import train
 import utils
@@ -42,9 +42,27 @@ if __name__ == '__main__':
     constructor = 'build_%s' % args.model
     model = getattr(base_model, constructor)(train_dset, args.num_hid).cuda()
     model.w_emb.init_embedding('data/glove6b_init_300d.npy')
+    
 
-    model = nn.DataParallel(model).cuda()
 
     train_loader = DataLoader(train_dset, batch_size, shuffle=True, num_workers=1)
     eval_loader =  DataLoader(eval_dset, batch_size, shuffle=True, num_workers=1)
+    
+    
+    """
+    load pretrained model
+    """
+    
+    model_path = 'saved_models/my_5_abstract/model.pth'
+    model_params = torch.load(model_path)
+    model.load_state_dict(model_params, strict=False)
+    print("Loading params")
+    model.eval() 
+    model.train()
+    #model.train()
+
+
+    print("PASE")
+    
+    model = nn.DataParallel(model).cuda()
     train(model, train_loader, eval_loader, args.epochs, args.output)

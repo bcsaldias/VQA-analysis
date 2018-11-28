@@ -32,6 +32,8 @@ def train(model, train_loader, eval_loader, num_epochs, output):
         total_loss = 0
         train_score = 0
         t = time.time()
+        model.train()
+
 
         ########################
         # (features, spatials, question, target)
@@ -67,8 +69,11 @@ def train(model, train_loader, eval_loader, num_epochs, output):
         logger.write('\teval score: %.2f (%.2f)' % (100 * eval_score, 100 * bound))
 
         if eval_score > best_eval_score:
+            state = {'epoch': epoch + 1, 'state_dict': model.state_dict(),
+             'optimizer': optim.state_dict(), 'losslogger': logger}
+            
             model_path = os.path.join(output, 'model.pth')
-            torch.save(model.state_dict(), model_path)
+            torch.save(state, model_path)
             best_eval_score = eval_score
 
 
