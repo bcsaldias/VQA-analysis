@@ -20,7 +20,7 @@ import h5py
 import cPickle
 import numpy as np
 import utils
-
+from tqdm import tqdm
 
 csv.field_size_limit(sys.maxsize)
 
@@ -47,10 +47,15 @@ if __name__ == '__main__':
         train_imgids = cPickle.load(open(train_ids_file))
         val_imgids = cPickle.load(open(val_ids_file))
     else:
-        train_imgids = utils.load_imageid('experiment_real/data/train2014')
-        val_imgids = utils.load_imageid('experiment_real/data/val2014')
-        cPickle.dump(train_imgids, open(train_ids_file, 'wb'))
-        cPickle.dump(val_imgids, open(val_ids_file, 'wb'))
+        print(val_ids_file)
+        print("error here")
+        raise 0/0
+
+    #else:
+    #    train_imgids = utils.load_imageid('experiment_real/data/train2014')
+    #    val_imgids = utils.load_imageid('experiment_real/data/val2014')
+    #    cPickle.dump(train_imgids, open(train_ids_file, 'wb'))
+    #    cPickle.dump(val_imgids, open(val_ids_file, 'wb'))
 
     train_indices = {}
     val_indices = {}
@@ -75,7 +80,7 @@ if __name__ == '__main__':
     print("reading tsv...")
     with open(infile, "r+b") as tsv_in_file:
         reader = csv.DictReader(tsv_in_file, delimiter='\t', fieldnames=FIELDNAMES)
-        for item in reader:
+        for item in tqdm(reader):
             item['num_boxes'] = int(item['num_boxes'])
             image_id = int(item['image_id'])
             image_w = float(item['image_w'])

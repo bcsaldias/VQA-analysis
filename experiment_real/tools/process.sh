@@ -1,5 +1,5 @@
 # Process data
 
-python tools/create_dictionary.py
-python tools/compute_softscore.py
-python tools/detection_features_converter.py
+#python experiment_real/tools/create_dictionary.py
+#python experiment_real/tools/compute_softscore.py
+python experiment_real/tools/detection_features_converter.py

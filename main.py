@@ -4,15 +4,14 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 import numpy as np
 
-from dataset import Dictionary, VQAFeatureDataset
 
 """
 CHANGE MODEL HERE
 """
-from models import my_model_2 as base_model
+from experiment_real.dataset import Dictionary, VQAFeatureDataset
+from models import base_model
 
 from train import train
-import utils
 
 
 def parse_args():
@@ -34,35 +33,34 @@ if __name__ == '__main__':
     torch.cuda.manual_seed(args.seed)
     torch.backends.cudnn.benchmark = True
 
-    dictionary = Dictionary.load_from_file('data/dictionary.pkl')
-    train_dset = VQAFeatureDataset('train', dictionary)
-    eval_dset = VQAFeatureDataset('val', dictionary)
+    dictionary = Dictionary.load_from_file('experiment_real/data/dictionary.pkl')
+    train_dset = VQAFeatureDataset('train', dictionary, dataroot='experiment_real/data/')
+    eval_dset = VQAFeatureDataset('val', dictionary, dataroot='experiment_real/data/')
     batch_size = args.batch_size
 
     constructor = 'build_%s' % args.model
     model = getattr(base_model, constructor)(train_dset, args.num_hid).cuda()
-    model.w_emb.init_embedding('data/glove6b_init_300d.npy')
+    model.w_emb.init_embedding('experiment_real/data/glove6b_init_300d.npy')
     
 
 
     train_loader = DataLoader(train_dset, batch_size, shuffle=True, num_workers=1)
     eval_loader =  DataLoader(eval_dset, batch_size, shuffle=True, num_workers=1)
     
+    model = nn.DataParallel(model).cuda()
+
     
     """
     load pretrained model
-    """
-    model = nn.DataParallel(model).cuda()
-
-
-    model_path = 'saved_models/my_5_abstract/model.pth'
+    model_path = 'saved_models/my_6_abstract/model.pth'
     model_params = torch.load(model_path)
     print("# params", len(model_params.keys()))
-    model.load_state_dict(model_params)
-    
+    model.load_state_dict(model_params, strict=False)
     print("Loading params")
     model.eval() 
     model.train()
+    """
+
     print("PASE")
     
     train(model, train_loader, eval_loader, args.epochs, args.output)
