@@ -151,7 +151,7 @@ def filter_answers(answers_dset, min_occurence):
     return occurence
 
 
-def create_ans2label(occurence, name, cache_root='data/cache'):
+def create_ans2label(occurence, name, cache_root='experiment_real/data/cache'):
     """Note that this will also create label2ans.pkl at the same time
 
     occurence: dict {answer -> whatever}
@@ -175,7 +175,7 @@ def create_ans2label(occurence, name, cache_root='data/cache'):
     return ans2label
 
 
-def compute_target(answers_dset, ans2label, name, cache_root='data/cache'):
+def compute_target(answers_dset, ans2label, name, cache_root='experiment_real/data/cache'):
     """Augment answers_dset with soft score as label
 
     ***answers_dset should be preprocessed***

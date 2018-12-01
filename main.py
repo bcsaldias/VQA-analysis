@@ -8,8 +8,11 @@ import numpy as np
 """
 CHANGE MODEL HERE
 """
-from experiment_real.dataset import Dictionary, VQAFeatureDataset
-from models import base_model
+from experiment_abstract.dataset import Dictionary, VQAFeatureDataset
+exp = 'experiment_abstract/'
+
+from models import base_model #my_model as 
+
 
 from train import train
 
@@ -33,14 +36,14 @@ if __name__ == '__main__':
     torch.cuda.manual_seed(args.seed)
     torch.backends.cudnn.benchmark = True
 
-    dictionary = Dictionary.load_from_file('experiment_real/data/dictionary.pkl')
-    train_dset = VQAFeatureDataset('train', dictionary, dataroot='experiment_real/data/')
-    eval_dset = VQAFeatureDataset('val', dictionary, dataroot='experiment_real/data/')
+    dictionary = Dictionary.load_from_file(exp+'data/dictionary.pkl')
+    train_dset = VQAFeatureDataset('train', dictionary, dataroot=exp+'data/')
+    eval_dset = VQAFeatureDataset('val', dictionary, dataroot=exp+'data/')
     batch_size = args.batch_size
 
     constructor = 'build_%s' % args.model
     model = getattr(base_model, constructor)(train_dset, args.num_hid).cuda()
-    model.w_emb.init_embedding('experiment_real/data/glove6b_init_300d.npy')
+    model.w_emb.init_embedding(exp+'data/glove6b_init_300d.npy')
     
 
 
@@ -52,7 +55,8 @@ if __name__ == '__main__':
     
     """
     load pretrained model
-    model_path = 'saved_models/my_6_abstract/model.pth'
+    """
+    model_path = exp+'saved_models/base_model_again/model.pth'
     model_params = torch.load(model_path)
     print("# params", len(model_params.keys()))
     model.load_state_dict(model_params, strict=False)
@@ -60,7 +64,7 @@ if __name__ == '__main__':
     model.eval() 
     model.train()
     """
-
+    """
     print("PASE")
     
     train(model, train_loader, eval_loader, args.epochs, args.output)

@@ -8,5 +8,5 @@ task.sh
 *.pth
 new_logs*
 *.txt
-models/
+#models/
 saved_models/
