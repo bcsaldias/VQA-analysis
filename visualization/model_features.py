@@ -5,7 +5,8 @@ from attention import Attention, NewAttention
 from fc import FCNet
 import os
 
-os.chdir('../')
+import sys
+sys.path.insert(0, './../')
 from language_model import WordEmbedding, QuestionEmbedding
 
 
