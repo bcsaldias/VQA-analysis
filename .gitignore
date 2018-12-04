@@ -1,6 +1,6 @@
 data
 *.pyc
-*.ipynb
+#*.ipynb
 logs/
 new_logs/
 task.sh
