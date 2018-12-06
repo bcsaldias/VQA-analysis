@@ -30,8 +30,8 @@ constructor = 'build_baseline0_newatt'
 model = getattr(base_model, constructor)(train_dset, num_hid).cuda()
 model.w_emb.init_embedding(exp+'data/glove6b_init_300d.npy')
 
-train_loader = DataLoader(train_dset, batch_size, shuffle=False, num_workers=1)
-#eval_loader =  DataLoader(eval_dset, batch_size, shuffle=True, num_workers=1)
+#train_loader = DataLoader(train_dset, batch_size, shuffle=False, num_workers=1)
+eval_loader =  DataLoader(eval_dset, batch_size, shuffle=False, num_workers=1)
 
 model = nn.DataParallel(model).cuda()
 
@@ -43,7 +43,7 @@ model.eval()
 pass
 
 def train(model, data_loader):
-    with open('./visualization/responses_real', 'w') as file:
+    with open('./visualization/data/responses_real_val', 'w') as file:
         for i, (v, b, q, a) in enumerate(data_loader):
             v = Variable(v).cuda()
             b = Variable(b).cuda()
@@ -57,7 +57,7 @@ def train(model, data_loader):
                 file.write('\n')
     print('END features')
 
-responses = train(model, train_loader)
+responses = train(model, eval_loader)
 
 
 
