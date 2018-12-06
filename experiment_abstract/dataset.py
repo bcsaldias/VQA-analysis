@@ -183,7 +183,7 @@ class VQAFeatureDataset(Dataset):
         if labels is not None:
             target.scatter_(0, labels, scores)
 
-        return features, spatials, question, target
+        return features, spatials, question, target, entry['question_id']
 
     def __len__(self):
         return len(self.entries)
