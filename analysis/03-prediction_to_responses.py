@@ -43,18 +43,26 @@ model = nn.DataParallel(model).cuda()
 model_path = exp+'saved_models/base_model_again/model.pth'
 model_params = torch.load(model_path)
 model.load_state_dict(model_params)
-model.train(False)
 model.eval()
 pass
     
+def compute_score_with_logits(logits, labels):
+    logits = torch.max(logits, 1)[1].data # argmax
     
+    one_hots = torch.zeros(*labels.size()).cuda()
+    one_hots.scatter_(1, logits.view(-1, 1), 1)
+    
+    scores = (one_hots * labels)
+    return scores
+
 def compare(logits, labels):
     logits = torch.max(logits, 1)[1].data.cpu().numpy().astype(str).tolist()
     labels = torch.max(labels, 1)[1].data.cpu().numpy().astype(str).tolist()
     return list(zip(logits, labels))
     
 def evaluate(model, dataloader, _file):
-    with open('./visualization/data/predictions_details_{}'.format(_file), 'w') as file:
+    with open('./analysis/data/predictions_details_{}'.format(_file), 'w') as file:
+        score = 0
         for v, b, q, a, q_id in iter(dataloader):
             with torch.no_grad():
                 v = Variable(v).cuda()
@@ -64,11 +72,14 @@ def evaluate(model, dataloader, _file):
                 batch_score = compare(pred, a.cuda())
 
                 query_ids = q_id.cpu().detach().numpy()
+                score += compute_score_with_logits(pred, a.cuda()).sum()
+                o_values = compute_score_with_logits(pred, a.cuda()).sum(1).cpu().detach().numpy()
                 
                 for j, value in enumerate(batch_score):
-                    file.write(','.join(value)+','+str(query_ids[j]))
+                    file.write(','.join(value)+','+str(query_ids[j])+','+str(o_values[j]))
                     file.write('\n')
-    print('END features')
+        score = float(score) / len(dataloader.dataset)
+    print('END features', score)
     
 responses = evaluate(model, train_loader, 'base_real_train')
 responses = evaluate(model, eval_loader, 'base_real_val')

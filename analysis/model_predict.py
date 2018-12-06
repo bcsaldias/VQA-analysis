@@ -1,12 +1,12 @@
 import torch
 import torch.nn as nn
 from torch.nn.utils.weight_norm import weight_norm
-from attention import Attention, NewAttention
-from fc import FCNet
 import os
 
 import sys
-sys.path.insert(0, './../')
+sys.path.insert(0, './../models/')
+from attention import Attention, NewAttention
+from fc import FCNet
 from language_model import WordEmbedding, QuestionEmbedding
 
 
