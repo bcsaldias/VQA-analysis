@@ -11,15 +11,13 @@ import os
 
 import sys
 sys.path.insert(0, './../')
+
 from experiment_real.dataset import Dictionary, VQAFeatureDataset
-import model_features as base_model
+import model_features_activations as base_model
 
 
 os.chdir('./../')
-
-
 exp = './experiment_real/'
-
 
 torch.manual_seed(1111)
 torch.cuda.manual_seed(1111)
@@ -39,8 +37,6 @@ model.w_emb.init_embedding(exp+'data/glove6b_init_300d.npy')
 train_loader = DataLoader(train_dset, batch_size, shuffle=True, num_workers=1)
 eval_loader =  DataLoader(eval_dset, batch_size, shuffle=True, num_workers=1)
 
-
-
 model = nn.DataParallel(model).cuda()
 
 model_path = exp+'saved_models/my_model_1/model.pth'
@@ -51,8 +47,8 @@ model.eval()
 pass
 
 
-def train(model, data_loader):
-    with open('./visualization/data/responses_real_val', 'w') as file:
+def train(model, data_loader, scen):
+    with open('./visualization/data/responses_real_{}'.format(scen), 'w') as file:
         for i, (v, b, q, a, q_id) in enumerate(data_loader):
             v = Variable(v).cuda()
             b = Variable(b).cuda()
@@ -69,7 +65,9 @@ def train(model, data_loader):
                 file.write('\n')
     print('END features')
 
-responses = train(model, eval_loader)
+responses = train(model, eval_loader, 'val')
+responses = train(model, train_loader, 'train')
+
 
 
 
