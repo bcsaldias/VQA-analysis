@@ -32,9 +32,11 @@ def compute_score_with_logits(logits, labels):
 
 
 def train(model, train_loader, eval_loader, num_epochs, output):
-    utils.create_dir(output)
+    if not output is None:
+        utils.create_dir(output)
+        logger = utils.Logger(os.path.join(output, 'log.txt'))
+        
     optim = torch.optim.Adamax(model.parameters())
-    logger = utils.Logger(os.path.join(output, 'log.txt'))
     best_eval_score = 0
 
     for epoch in range(num_epochs):
@@ -47,7 +49,8 @@ def train(model, train_loader, eval_loader, num_epochs, output):
         ########################
         # (features, spatials, question, target)
         ########################
-        for i, (v, b, q, a) in enumerate(train_loader):
+        for i, OUT in enumerate(train_loader):
+            (v, b, q, a, q_id) = OUT
             v = Variable(v).cuda()
             b = Variable(b).cuda()
             q = Variable(q).cuda()
@@ -73,14 +76,15 @@ def train(model, train_loader, eval_loader, num_epochs, output):
         eval_score, bound = evaluate(model, eval_loader)
         model.train(True)
 
-        logger.write('epoch %d, time: %.2f' % (epoch, time.time()-t))
-        logger.write('\ttrain_loss: %.2f, score: %.2f' % (total_loss, train_score))
-        logger.write('\teval score: %.2f (%.2f)' % (100 * eval_score, 100 * bound))
-
-        if eval_score > best_eval_score:
-            model_path = os.path.join(output, 'model.pth')
-            torch.save(model.state_dict(), model_path)
-            best_eval_score = eval_score
+        print('epoch %d, time: %.2f' % (epoch, time.time()-t))
+        print('\ttrain_loss: %.2f, score: %.2f' % (total_loss, train_score))
+        print('\teval score: %.2f (%.2f)' % (100 * eval_score, 100 * bound))
+        
+        if not output is None:
+            if eval_score > best_eval_score:
+                model_path = os.path.join(output, 'model.pth')
+                torch.save(model.state_dict(), model_path)
+                best_eval_score = eval_score
 
 
 def evaluate(model, dataloader):
@@ -90,7 +94,7 @@ def evaluate(model, dataloader):
     ######################## 
     # modify for eval too
     ######################## 
-    for v, b, q, a in iter(dataloader):
+    for v, b, q, a , q_id in iter(dataloader):
         with torch.no_grad():
             v = Variable(v).cuda()
             b = Variable(b).cuda()
@@ -104,4 +108,3 @@ def evaluate(model, dataloader):
     score = score / len(dataloader.dataset)
     upper_bound = upper_bound / len(dataloader.dataset)
     return score, upper_bound
-
