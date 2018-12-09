@@ -12,12 +12,12 @@ import os
 import sys
 sys.path.insert(0, './../')
 
-from experiment_real.dataset import Dictionary, VQAFeatureDataset
+from experiment_abstract.dataset import Dictionary, VQAFeatureDataset
 import model_features_activations as base_model
 
 
 os.chdir('./../')
-exp = './experiment_real/'
+exp = './experiment_abstract/'
 
 torch.manual_seed(1111)
 torch.cuda.manual_seed(1111)
@@ -39,7 +39,7 @@ eval_loader =  DataLoader(eval_dset, batch_size, shuffle=True, num_workers=1)
 
 model = nn.DataParallel(model).cuda()
 
-model_path = exp+'saved_models/my_model_1/model.pth'
+model_path = exp+'saved_models/my_model_2/model.pth'
 model_params = torch.load(model_path)
 model.load_state_dict(model_params, strict=False)
 model.train(False)
@@ -48,7 +48,7 @@ pass
 
 
 def train(model, data_loader, scen):
-    with open('./visualization/data/responses_real_{}'.format(scen), 'w') as file:
+    with open('./analysis/data/responses_{}'.format(scen), 'w') as file:
         for i, (v, b, q, a, q_id) in enumerate(data_loader):
             v = Variable(v).cuda()
             b = Variable(b).cuda()
@@ -65,8 +65,8 @@ def train(model, data_loader, scen):
                 file.write('\n')
     print('END features')
 
-responses = train(model, eval_loader, 'val')
-responses = train(model, train_loader, 'train')
+responses = train(model, eval_loader, 'abstract_val')
+responses = train(model, train_loader, 'abstract_train')
 
 
 
