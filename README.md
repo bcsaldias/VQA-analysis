@@ -5,5 +5,6 @@ This project is based in  [An efficient PyTorch implementation of the winning en
 
 #### About
 
-This repository is part of a project done at MIT for the course 6.869 Advances in Computer Vision. Please find more details in the write up.
+This repository is part of a project done at MIT for the Fall-18 class 6.869 Advances in Computer Vision. 
+Please find more details in the write up.
 
