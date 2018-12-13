@@ -1,7 +1,7 @@
 
 ## Public files for analyzes
 
-This folder contains the questions types and all the information used to obtain results for our final report. Find in each file the attention types relevance for each question type. Additionally, we provide other features to encourage further exploration.
+This folder contains the questions types and all the information used to obtain results for our [final report](https://github.com/bcsaldias/VQA-analysis/blob/master/WriteUp.pdf). Find in each file the attention types relevance for each question type. Additionally, we provide other features to encourage further exploration.
 
 Note that these public files relate to the abstract scenes and real-world images (MSCOCO) for trainin and validation sets:
 
