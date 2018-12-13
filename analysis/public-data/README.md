@@ -22,7 +22,7 @@ Each CSV file contains the following columns:
 - **above_median**: if the question type contains above median number of samples.
 - **o_bottom_up**: total sum of the activated features (before normalizing to obtain sum_bottom_up).
 - **o_top_down**: the same as o_bottom_up but for top-down attention.
-- **_diff**: sum_bottom_up - sum_top_down = 1 - 2 x sum_bottom_up. The reported results depends in confidence intervals for this value.
+- **_diff**: sum_bottom_up - sum_top_down = 1 - 2 x sum_bottom_up. To determine whether a question type is responsible for the questions responses, we set a confidence interval (CI) for this value.
 - **diff_score**: my_score - base_score
 - **percen**: _count / dataset size.
 
